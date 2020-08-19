@@ -89,12 +89,6 @@ class FfmpegAT32 < Formula
   depends_on "zimg" => :optional
 
   def install
-    # Fixes "dyld: lazy symbol binding failed: Symbol not found: _clock_gettime"
-    if MacOS.version == "10.11" && MacOS::Xcode.installed? && MacOS::Xcode.version >= "8.0"
-      inreplace %w[libavdevice/v4l2.c libavutil/time.c], "HAVE_CLOCK_GETTIME",
-                                                         "UNDEFINED_GIBBERISH"
-    end
-
     args = %W[
       --prefix=#{prefix}
       --enable-shared
@@ -179,27 +173,20 @@ class FfmpegAT32 < Formula
       args << "--disable-vda"
     end
 
-    # For 32-bit compilation under gcc 4.2, see:
-    # https://trac.macports.org/ticket/20938#comment:22
-    ENV.append_to_cflags "-mdynamic-no-pic" if Hardware::CPU.is_32_bit? && Hardware::CPU.intel? && ENV.compiler == :clang
-
     system "./configure", *args
 
-    if MacOS.prefer_64_bit?
-      inreplace "config.mak" do |s|
-        shflags = s.get_make_var "SHFLAGS"
-        if shflags.gsub!(" -Wl,-read_only_relocs,suppress", "")
-          s.change_make_var! "SHFLAGS", shflags
-        end
+    inreplace "config.mak" do |s|
+      shflags = s.get_make_var "SHFLAGS"
+      if shflags.gsub!(" -Wl,-read_only_relocs,suppress", "")
+        s.change_make_var! "SHFLAGS", shflags
       end
     end
-
+    
     system "make", "install"
 
-    if build.with? "tools"
-      system "make", "alltools"
-      bin.install Dir["tools/*"].select { |f| File.executable? f }
-    end
+    # Build and install additional FFmpeg tools
+    system "make", "alltools"
+    bin.install Dir["tools/*"].select { |f| File.executable? f }
   end
 
   test do
