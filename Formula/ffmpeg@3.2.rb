@@ -90,21 +90,21 @@ class FfmpegAT32 < Formula
       --enable-pthreads
       --enable-gpl
       --enable-version3
-      --enable-hardcoded-tables
       --enable-avresample
       --cc=#{ENV.cc}
       --host-cflags=#{ENV.cflags}
       --host-ldflags=#{ENV.ldflags}
+      --enable-libdav1d
       --enable-libmp3lame
       --enable-libopus
       --enable-libsnappy
       --enable-libtheora
-      --enable-libvo-aacenc
       --enable-libvorbis
       --enable-libvpx
       --enable-libx264
       --enable-libx265
       --enable-libxvid
+      --enable-lzma
       --enable-libfontconfig
       --enable-libfreetype
       --enable-frei0r
@@ -140,12 +140,6 @@ class FfmpegAT32 < Formula
     args << "--enable-libzimg" if build.with? "zimg"
     args << "--enable-libzmq" if build.with? "zeromq"
     args << "--enable-openssl" if build.with? "openssl"
-
-    if build.with? "xz"
-      args << "--enable-lzma"
-    else
-      args << "--disable-lzma"
-    end
 
     if build.with? "openjpeg"
       args << "--enable-libopenjpeg"
