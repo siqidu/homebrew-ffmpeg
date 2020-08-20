@@ -6,10 +6,7 @@ class FfmpegAT32 < Formula
   sha256 "3d8bc9b12413b98811106f1c24df48ff14d6ea7ef65b31c4d8beec632382098e"
   license "GPL-2.0"
 
-  keg_only :versioned_formula
-
   option "with-chromaprint", "Enable the Chromaprint audio fingerprinting library"
-  option "with-fdk-aac", "Enable the Fraunhofer FDK AAC library"
   option "with-gsm", "enable GSM de/encoding via libgsm"
   option "with-libbluray", "Enable BluRay reading using libbluray"
   option "with-libbs2b", "Enable bs2b DSP library"
@@ -57,8 +54,6 @@ class FfmpegAT32 < Formula
   depends_on "xz"
 
   depends_on "chromaprint" => :optional
-  depends_on "fdk-aac" => :optional
-  depends_on "game-music-emu" => :optional
   depends_on "libbluray" => :optional
   depends_on "libbs2b" => :optional
   depends_on "libcaca" => :optional
@@ -94,7 +89,6 @@ class FfmpegAT32 < Formula
       --cc=#{ENV.cc}
       --host-cflags=#{ENV.cflags}
       --host-ldflags=#{ENV.ldflags}
-      --enable-libdav1d
       --enable-libmp3lame
       --enable-libopus
       --enable-libsnappy
@@ -124,7 +118,6 @@ class FfmpegAT32 < Formula
     args << "--enable-libbs2b" if build.with? "libbs2b"
     args << "--enable-libcaca" if build.with? "libcaca"
     args << "--enable-libebur128" if build.with? "libebur128"
-    args << "--enable-libfdk-aac" if build.with? "fdk-aac"
     args << "--enable-libgsm" if build.with? "libgsm"
     args << "--enable-libmodplug" if build.with? "libmodplug"
     args << "--enable-libopenh264" if build.with? "openh264"
